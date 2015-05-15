@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %} Edit Subject {% endblock %}
+{% block display_title %} Subject {% endblock %}
+{% block display_title_sub %} Edit {% endblock %}
+
+{% block extra_menu %}{% endblock %}
+
+{% block main_content %}
+    <div class="row">
+
+        <div class="col-md-6">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="subject_id">Subject ID</label>
+
+                    {% if allow_key_edit %}
+                        <input type="text" class="form-control"
+                            id="subject_id"
+                            value="{{subject.subject_id}}"
+                            placeholder="How the subject is identified"
+                            required>
+                    {% else %}
+                        <input type="text" class="form-control"
+                            id="subject_id_readonly"
+                            value="{{subject.subject_id}}"
+                            disabled>
+                        <input type="hidden" class="form-control"
+                            id="subject_id"
+                            value="{{subject.subject_id}}">
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" id="first_name"
+                        value="{{subject.first_name or ''}}"
+                        placeholder="The subject's first name">
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" id="last_name"
+                        value="{{subject.last_name or ''}}"
+                        placeholder="The subject's last name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" class="form-control" id="email"
+                        value="{{subject.email or ''}}"
+                        placeholder="The subject's email address">
+                </div>
+
+                <div class="form-group">
+                    <label for="exp_condition">Experimental Condition</label>
+                    <select class="form-control" id="exp_condition" required>
+                        {% for cond in conditions %}
+                            <option value="{{cond.condition_id}}"
+                                    {%if subject.exp_condition == cond.condition_id%}selected{%endif%}
+                            >
+                                {{cond.condition_id}}: {{cond.condition_name}}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary pull-right">Save</button>
+                <span class="pull-right">&nbsp;</span>
+                <a class="btn btn-info pull-right" href="/subjects">Cancel</a>
+                <div class="clearfix">&nbsp;</div>
+            </form>
+        </div>
+
+        <div class="col-md-offset-1 col-md-5">
+            {% for errmsg in errors %}
+                <div class="alert alert-danger" role="alert">{{errmsg}}</div>
+            {% endfor %}
+
+            <table class="table table-condensed">
+                <thead><tr>
+                    <th>Cond</th>
+                    <th>Cond Name</th>
+                    <th>Subject Count</th>
+                </tr></thead>
+
+                <tbody>
+                    {% for stat in condition_stats %}
+                        <tr>
+                        <td>
+                            <a href="{{url_for('condition_view', cid=stat.condition_id)}}">
+                                {{stat.condition_id}}
+                            </a>
+                        </td>
+                        <td>{{stat.condition_name}}</td>
+                        <td>{{stat.subject_count}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p><a href="" id="uniformCond" class="btn btn-sm btn-primary">
+                Select Condition Uniformly At Random
+            </a></p>
+
+            <p><a href="" id="weightedCond" class="btn btn-sm btn-primary">
+                Select Condition At Random from Condition(s) with Least Members
+            </a></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    //We use the server-side template to generate client-side javascript
+    var conditions = [
+        {% for cond in condition_stats %}
+            '{{cond.condition_id}}',
+        {% endfor %}
+    ];
+
+    var min_conditions = [
+        {% for cid in min_conditions %}
+            '{{cid}}',
+        {% endfor %}
+    ];
+
+    //If we have no min conditions for some reason, make them the same as conditions
+    if (min_conditions.length < 1) {
+        min_conditions = conditions;
+    }
+
+    //Given a condition ID, select that condition in our drop-down for the
+    //subject's condition
+    function selectCondition(cid) {
+        $("#exp_condition").find("option").each(function(idx, ele){
+            ele = $(ele);
+            if (ele.val() == cid) {
+                ele.prop('selected', true);
+            }
+            else {
+                ele.prop('selected', false);
+            }
+        });
+    }
+
+    //Set up events
+    $(function(){
+        $("#uniformCond").click(function(evt){
+            evt.preventDefault();
+            selectCondition(_.sample(conditions));
+        });
+
+        $("#weightedCond").click(function(evt){
+            evt.preventDefault();
+            selectCondition(_.sample(min_conditions));
+        });
+    });
+</script>
+{% endblock %}

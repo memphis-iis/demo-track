@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %} View Experimental Condition {% endblock %}
+{% block display_title %} Experimental Condition {% endblock %}
+{% block display_title_sub %} View {% endblock %}
+
+{% block extra_menu %}
+    <li><a href="{{url_for('condition_edit', cid=condition.condition_id)}}">
+        <span class="glyphicon glyphicon-pencil"></span>
+        Edit Condition {{condition.condition_id}}
+    </a></li>
+{% endblock %}
+
+{% block main_content %}
+    <div class="row">
+    <div class="col-md-3">
+        <p class="lead">
+            Condition {{condition.condition_id}}: {{condition.condition_name}}
+        </p>
+        <p class="well">
+            {{condition.description or ''}}
+        </p>
+    </div>
+
+    <div class="col-md-offset-1 col-md-6">
+        <p class="lead">
+            There are {{subjects | length}} subjects in this condition
+        </p>
+
+        <table class="table table-condensed table-striped data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for subject in subjects %}
+                <tr>
+                    <td>
+                        <a href="{{url_for('subject_view', sid=subject.subject_id)}}">
+                            {{subject.subject_id}}
+                        </a>
+                    </td>
+                    <td>{{subject.first_name or ''}} {{subject.last_name or ''}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

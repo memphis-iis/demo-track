@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %} View Subject {% endblock %}
+{% block display_title %} Subject {% endblock %}
+{% block display_title_sub %} View {% endblock %}
+
+{% block extra_menu %}
+    <li><a href="{{url_for('subject_edit', sid=subject.subject_id)}}">
+        <span class="glyphicon glyphicon-pencil"></span>
+        Edit Subject {{subject.subject_id}}
+    </a></li>
+{% endblock %}
+
+{% block main_content %}
+    <div class="row">
+    <div class="col-md-6">
+        <p class="lead">
+            Subject {{subject.subject_id}}:
+            {{subject.first_name or ''}} {{subject.last_name or ''}}
+        </p>
+        <p>
+            {% if condition %}
+                In Condition <a href="{{url_for('condition_view', cid=condition.condition_id)}}">
+                    {{condition.condition_id}}: {{condition.condition_name}}
+                </a>
+            {% endif %}
+        </p>
+        <p>
+            Email: {{subject.email or ''}}<br>
+        </p>
+    </div>
+
+    <div class="col-md-6">
+    </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

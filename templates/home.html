@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %} Subject Tracker Home {% endblock %}
+{% block display_title %} Subject Tracker {% endblock %}
+{% block display_title_sub %} Home {% endblock %}
+
+{% block extra_menu %}{% endblock %}
+
+{% block main_content %}
+    <div class="row">
+
+    <div class="col-md-5">
+        <p class="well lead">There are currently {{subjects | length}} subjects
+        in {{condition_stats | length}} conditions</p>
+
+        <table class="table table-condensed">
+            <thead><tr>
+                <th>Cond</th>
+                <th>Cond Name</th>
+                <th>Subject Count</th>
+            </tr></thead>
+
+            <tbody>
+                {% for stat in condition_stats %}
+                    <tr>
+                    <td>
+                        <a href="{{url_for('condition_view', cid=stat.condition_id)}}">
+                            {{stat.condition_id}}
+                        </a>
+                    </td>
+                    <td>{{stat.condition_name}}</td>
+                    <td>{{stat.subject_count}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-offset-1 col-md-5">
+        <form method="POST" action="/utils/randomize">
+            <div class="form-group">
+                If you don't see many subjects and conditions to the right, you can
+                <button class="btn btn-xs btn-danger">
+                    <span class="glyphicon glyphicon-grain"></span>
+                    Generate Random Seed Data
+                </button>
+            </div>
+        </form>
+    </div>
+
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

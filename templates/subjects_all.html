@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %} View All Subject {% endblock %}
+{% block display_title %} Subjects {% endblock %}
+{% block display_title_sub %} View All {% endblock %}
+
+{% block extra_menu %}
+    <li><a href="/subjects/new/edit">
+        <span class="glyphicon glyphicon-plus"></span>Add Subject
+    </a></li>
+{% endblock %}
+
+{% block main_content %}
+    <div class="row">
+    <div class="col-md-12">
+        <table class="table table-condensed table-striped data-table">
+            <thead>
+            <tr>
+                <th>Actions</th>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Exp Condition</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for subject in subjects %}
+                <tr>
+                    <td>
+                        <a class="btn btn-sm btn-primary"
+                            href="{{url_for('subject_edit', sid=subject.subject_id)}}">
+                            <span class="glyphicon glyphicon-pencil"></span>Edit
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{url_for('subject_view', sid=subject.subject_id)}}">
+                            {{subject.subject_id}}
+                        </a>
+                    </td>
+                    <td>{{subject.first_name or ''}}</td>
+                    <td>{{subject.last_name or ''}}</td>
+                    <td>{{subject.email or ''}}</td>
+                    <td>
+                        <a href="{{url_for('condition_view', cid=subject.exp_condition)}}">
+                            {{subject.exp_condition}}: {{condition_names.get(subject.exp_condition, '')}}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

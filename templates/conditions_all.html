@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %} All Experimental Conditions {% endblock %}
+{% block display_title %} Experimental Condition {% endblock %}
+{% block display_title_sub %} View All {% endblock %}
+
+{% block extra_menu %}
+    <li><a href="/conds/new/edit">
+        <span class="glyphicon glyphicon-plus"></span>Add Condition
+    </a></li>
+{% endblock %}
+
+{% block main_content %}
+    <div class="row">
+    <div class="col-md-12">
+        <table class="table table-condensed table-striped">
+            <thead>
+            <tr>
+                <th>Actions</th>
+                <th>Condition ID</th>
+                <th>Name</th>
+                <th>Descrip</th>
+                <th>Members</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for cond in conditions %}
+                <tr>
+                    <td>
+                        <a class="btn btn-sm btn-primary"
+                            href="{{url_for('condition_edit', cid=cond.condition_id)}}">
+                            <span class="glyphicon glyphicon-pencil"></span>Edit
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{url_for('condition_view', cid=cond.condition_id)}}">
+                            {{cond.condition_id}}
+                        </a>
+                    </td>
+                    <td>
+                        {{cond.condition_name}}
+                    </td>
+                    <td class="trunc-text">
+                        {{cond.description or ''}}
+                    </td>
+                    <td>
+                        {{condition_stats[cond.condition_id]}}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}
